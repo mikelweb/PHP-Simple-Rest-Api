@@ -54,3 +54,31 @@ for ($i=0;$i<count($columns);$i++) {
 ```
 
 This creates a string like column1='value1', column2='value2' for the SET part of an SQL query, which will be used in UPDATE operations.
+
+```
+switch ($method) {
+  case 'GET':
+    $sql = "select * from `$table`".($key?" WHERE ID=$key":''); break;
+  case 'PUT':
+    $sql = "update `$table` set $set where id=$key"; break;
+  case 'POST':
+    $sql = "insert into `$table` set $set"; break;
+  case 'DELETE':
+    $sql = "delete `$table` where id=$key"; break;
+}
+```
+
+This switch statement checks the HTTP method and generates the appropriate SQL query.
+
+```$result = mysqli_query($conexion, $sql);```
+
+This runs the SQL query on the database using the connection $conexion. The result of the query (if any) is stored in $result variable.
+
+```
+if(!$result) {
+    http_response_code(404);
+    die(mysqli_error());
+}
+```
+
+If the SQL query fails, it sends an HTTP 404 response (Not Found) and shows the error message from MySQL.
