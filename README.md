@@ -82,3 +82,30 @@ if(!$result) {
 ```
 
 If the SQL query fails, it sends an HTTP 404 response (Not Found) and shows the error message from MySQL.
+
+```
+if ($method == 'GET') {
+  header('Content-Type: application/json');
+  if (!$key) echo '[';
+  for ($i=0;$i<mysqli_num_rows($result);$i++) {
+    echo ($i>0?',':'').json_encode(mysqli_fetch_object($result));
+  }
+  if (!$key) echo ']';
+} elseif ($method == 'POST') {
+  echo mysqli_insert_id($conexion);
+} else {
+  echo mysqli_affected_rows($conexion);
+}
+```
+
+If the method is GET (for getting data), it sets the response header to indicate that the response will be in JSON format and iterates through all the rows from the query result converting each row into JSON format.
+
+If no key is provided in the URL, it wraps the results in square brackets [] to return them as an array of JSON objects.
+
+If the method is POST (for inserting data), it returns the ID of the newly inserted record using mysqli_insert_id.
+
+For other methods (like PUT or DELETE), it returns the number of rows affected by the query (e.g., how many rows were updated or deleted).
+
+```mysqli_close($conexion);```
+
+This closes the database connection after the query is finished.
